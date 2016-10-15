@@ -14,70 +14,6 @@ var persons = {}
  ----------------------------------------------------------------------
 */
 
-function getFamily(id) {
-    var family = families[id]
-    if (family == null) {
-        family = {
-            "id": id,
-            "parents":[],
-            "children":[],
-        }
-        families[id] = family
-    }
-    return family
-}
-
-function getFamilyDimensions(id) {
-    var family = getFamily(id)
-    var w = 0
-    var h = 0
-    if (0 < family.children.length) {
-        w += childPad
-        var mw = 0
-        for (var i = 0; i < family.children.length; i++) {
-            var child = family.children[i]
-            if (0 < h) h += siblingPad
-            var cd = getPersonDimensions(child)
-            if (mw < cd[0]) mw = cd[0]
-            h += cd[1]
-        }
-        w += mw
-    }
-    return [w, h]
-}
-
-function getPersonDimensions(id) {
-    var person = persons[id]
-    var d = [personWidth, personHeight]
-    var famsDims = [0, 0]
-    for (var i = 0; i < person.parentOf.length; i++) {
-        var famDim = getFamilyDimensions(person.parentOf[i])
-        if (famDim != null){
-            famsDims[0] = Math.max(famsDims[0], famDim[0])
-            famsDims[1] += famDim[1]
-        }
-    }
-    return [d[0] + famsDims[0], Math.max(d[1], famsDims[1])]
-}
-
-function hasChildren(id) {
-    var person = persons[id]
-    for (var i = 0; i < person.parentOf.length; i++) {
-        var family = getFamily(person.parentOf[i])
-        if (0 < family.children.length) return true
-    }
-    return false
-}
-
-function getChildren(id) {
-    var person = persons[id]
-    var children = []
-    for (var i = 0; i < person.parentOf.length; i++) {
-        children = children.concat(getFamily(person.parentOf[i]).children)
-    }
-    return children
-}
-
 function Person(id, name, gender, childOf, parentOf) {
     var person = persons[id]
     if (person != null) {
@@ -99,6 +35,51 @@ function Person(id, name, gender, childOf, parentOf) {
     }
 }
 
+// ----------------------------------------------------------------------
+// Getters
+
+function getFamily(id) {
+    var family = families[id]
+    if (family == null) {
+        family = {
+            "id": id,
+            "parents":[],
+            "children":[],
+        }
+        families[id] = family
+    }
+    return family
+}
+
+function hasChildren(id) {
+    var person = persons[id]
+    for (var i = 0; i < person.parentOf.length; i++) {
+        var family = getFamily(person.parentOf[i])
+        if (0 < family.children.length) return true
+    }
+    return false
+}
+
+function getChildren(id) {
+    var person = persons[id]
+    var children = []
+    for (var i = 0; i < person.parentOf.length; i++) {
+        children = children.concat(getFamily(person.parentOf[i]).children)
+    }
+    return children
+}
+
+function getPartner(personId, familyId) {
+    var family = families[familyId]
+    for (var i = 0; i < family.parents.length; i++) {
+        var parent = family.parents[i]
+        if (parent != personId) {
+            return parent
+        }
+    }
+    return null
+}
+
 function canonicalizeMemberOf(obj) {
     if (Array.isArray(obj)) {
         return obj
@@ -107,6 +88,45 @@ function canonicalizeMemberOf(obj) {
         return []
     }
     return [obj]
+}
+
+/*
+ ----------------------------------------------------------------------
+  Dimensions calculation
+ ----------------------------------------------------------------------
+*/
+
+function getPersonDimensions(id) {
+    var person = persons[id]
+    var d = [personWidth, personHeight]
+    var famsDims = [0, 0]
+    for (var i = 0; i < person.parentOf.length; i++) {
+        var famDim = getFamilyDimensions(person.parentOf[i])
+        if (famDim != null){
+            famsDims[0] = Math.max(famsDims[0], famDim[0])
+            famsDims[1] += famDim[1]
+        }
+    }
+    return [d[0] + famsDims[0], Math.max(d[1], famsDims[1])]
+}
+
+function getFamilyDimensions(id) {
+    var family = getFamily(id)
+    var w = 0
+    var h = 0
+    if (0 < family.children.length) {
+        w += childPad
+        var mw = 0
+        for (var i = 0; i < family.children.length; i++) {
+            var child = family.children[i]
+            if (0 < h) h += siblingPad
+            var cd = getPersonDimensions(child)
+            if (mw < cd[0]) mw = cd[0]
+            h += cd[1]
+        }
+        w += mw
+    }
+    return [w, h]
 }
 
 /*
