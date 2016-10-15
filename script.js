@@ -49,23 +49,33 @@ function getFamilyDimensions(id) {
 function getPersonDimensions(id) {
     var person = persons[id]
     var d = [personWidth, personHeight]
-    if(person.parentOf != null){
-        var famDim = getFamilyDimensions(person.parentOf)
+    var famsDims = [0, 0]
+    for (var i = 0; i < person.parentOf.length; i++) {
+        var famDim = getFamilyDimensions(person.parentOf[i])
         if (famDim != null){
-            d[0] += famDim[0]
-            d[1] = famDim[1]
+            famsDims[0] = Math.max(famsDims[0], famDim[0])
+            famsDims[1] += famDim[1]
         }
     }
-    return d
+    return [d[0] + famsDims[0], Math.max(d[1], famsDims[1])]
 }
 
 function hasChildren(id) {
     var person = persons[id]
-    if (person.parentOf != null) {
-        var family = getFamily(person.parentOf)
-        return 0 < family.children.length
+    for (var i = 0; i < person.parentOf.length; i++) {
+        var family = getFamily(person.parentOf[i])
+        if (0 < family.children.length) return true
     }
     return false
+}
+
+function getChildren(id) {
+    var person = persons[id]
+    var children = []
+    for (var i = 0; i < person.parentOf.length; i++) {
+        children = children.concat(getFamily(person.parentOf[i]).children)
+    }
+    return children
 }
 
 function Person(id, name, gender, childOf, parentOf) {
@@ -77,16 +87,26 @@ function Person(id, name, gender, childOf, parentOf) {
         "id": id,
         "name": name,
         "gender": gender,
-        "childOf": childOf,
-        "parentOf": parentOf,
+        "childOf": canonicalizeMemberOf(childOf),
+        "parentOf": canonicalizeMemberOf(parentOf),
     }
     persons[id] = person
-    if (childOf != null) {
-        getFamily(childOf).children.push(id)
+    for (var i = 0; i < person.childOf.length; i++) {
+        getFamily(person.childOf[i]).children.push(id)
     }
-    if (parentOf != null) {
-        getFamily(parentOf).parents.push(id)
+    for (var i = 0; i < person.parentOf.length; i++) {
+        getFamily(person.parentOf[i]).parents.push(id)
     }
+}
+
+function canonicalizeMemberOf(obj) {
+    if (Array.isArray(obj)) {
+        return obj
+    }
+    if (obj == null) {
+        return []
+    }
+    return [obj]
 }
 
 /*
@@ -110,7 +130,8 @@ function renderTree(personId, offset){
     }
     dims = getPersonDimensions(personId)
     var foffset = [offset[0] + personWidth + childPad, offset[1]]
-    renderFamily(persons[personId].parentOf, foffset)
+    // TODO: multifamily
+    renderFamily(persons[personId].parentOf[0], foffset)
 }
 
 var svgns = "http://www.w3.org/2000/svg"
