@@ -55,15 +55,6 @@ function getFamily(id) {
     return family
 }
 
-function hasChildren(id) {
-    var person = persons[id]
-    for (var i = 0; i < person.parentOf.length; i++) {
-        var family = getFamily(person.parentOf[i])
-        if (0 < family.children.length) return true
-    }
-    return false
-}
-
 function getChildren(id) {
     var person = persons[id]
     var children = []
@@ -100,12 +91,43 @@ function canonicalizeMemberOf(obj) {
  ----------------------------------------------------------------------
 */
 
-function getPersonDimensions(id) {
+// From person up to eldest ancestors.
+function getParentsDimensions(personId) {
+    var person = persons[personId]
+    var dims = [0, 0]
+    for (var i = 0; i < person.childOf.length; i++) {
+        if (getFamily(person.childOf[i]).parents.length == 0) continue
+        var famDims = getParentsFamilyDimensions(person.childOf[i])
+        if (0 < famDims[0] && 0 < famDims[1]) {
+            dims[0] = Math.max(dims[0], famDims[0] + childPad)
+            if (0 < dims[1]) dims[1] += siblingPad
+            dims[1] += famDims[1]
+        }
+    }
+    return dims
+}
+
+// From family up to eldest ancestors.
+function getParentsFamilyDimensions(familyId) {
+    var family = getFamily(familyId)
+    if (family.parents.length == 0) return [0, 0]
+    var famDims = [0, 0]
+    var parBlockHeight = family.parents.length * personHeight
+    for (var i = 0; i < family.parents.length; i++) {
+        var grandDims = getParentsDimensions(family.parents[i])
+        if (0 < famDims[1]) famDims[1] += siblingPad
+        famDims = [Math.max(famDims[0], grandDims[0] + personWidth), famDims[1] + grandDims[1]]
+    }
+    famDims[1] = Math.max(famDims[1], parBlockHeight)
+    return famDims
+}
+
+function getPersonDescendantsDimensions(id) {
     var person = persons[id]
     if (person.parentOf.length == 0) return [personWidth, personHeight]
     var dims = [0, 0]
     for (var i = 0; i < person.parentOf.length; i++) {
-        var famDims = getFamilyDimensions(id, person.parentOf[i])
+        var famDims = getFamilyDescendantsDimensions(id, person.parentOf[i])
         dims[0] = Math.max(dims[0], famDims[0])
         if (0 < dims[1]) dims[1] += siblingPad
         dims[1] += famDims[1]
@@ -113,7 +135,7 @@ function getPersonDimensions(id) {
     return dims
 }
 
-function getFamilyDimensions(personId, familyId) {
+function getFamilyDescendantsDimensions(personId, familyId) {
     var famDims = [personWidth, personHeight]
     var partnerId = getPartner(personId, familyId)
     if (partnerId != null)
@@ -127,7 +149,7 @@ function getFamilyDimensions(personId, familyId) {
 }
 
 function getParentOffset(personId, familyId) {
-    var famDims = getFamilyDimensions(personId, familyId)
+    var famDims = getFamilyDescendantsDimensions(personId, familyId)
     if (getPartner(personId, familyId) != null) {
         var childrenDims = getChilrenDimensions(familyId)
         if (childrenDims[1] < famDims[1]) return [0, 0]
@@ -149,7 +171,7 @@ function getChilrenDimensions(id) {
         for (var i = 0; i < family.children.length; i++) {
             var child = family.children[i]
             if (0 < h) h += siblingPad
-            var cd = getPersonDimensions(child)
+            var cd = getPersonDescendantsDimensions(child)
             if (mw < cd[0]) mw = cd[0]
             h += cd[1]
         }
@@ -171,14 +193,65 @@ function vAdd(v1, v2) {
 var svgns = "http://www.w3.org/2000/svg"
 
 function render(personId) {
-    var dims = getPersonDimensions(personId)
+    var ancDims = getParentsDimensions(personId)
+    var desDims = getPersonDescendantsDimensions(personId)
     var svg = document.getElementById("cnv")
-    svg.setAttribute("width", dims[0] + svgPad * 2)
-    svg.setAttribute("height", dims[1] + svgPad * 2)
-    renderPerson(personId, [svgPad, svgPad])
+    var width = ancDims[0] + desDims[0] + svgPad * 2
+    var height = Math.max(ancDims[1], desDims[1]) + svgPad * 2
+    svg.setAttribute("width", width)
+    svg.setAttribute("height", height)
+    renderPersonDescendants(personId, [svgPad + ancDims[0], svgPad])
+    renderPersonAncestors(
+        personId,
+        [svgPad, svgPad + Math.abs((ancDims[1] - desDims[1]) / 2)],
+        [svgPad + ancDims[0], height / 2])
 }
 
-function renderPerson(id, offset, parentBind) {
+function renderPersonAncestors(personId, offset, childBind) {
+    var person = persons[personId]
+    var ancDims = getParentsDimensions(person.id)
+    if (debug) renderGroup(offset, ancDims, "lime")
+    var famHOffset = 0
+    for (var i = 0; i < person.childOf.length; i++) {
+        var family = getFamily(person.childOf[i])
+        if (family.parents.length == 0) continue
+        var famDims = getParentsFamilyDimensions(family.id)
+        var famOffset = vAdd(offset, [ancDims[0] - famDims[0] - childPad, famHOffset])
+        renderPersonAncestorsFamily(family.id, famOffset, childBind)
+        famHOffset += famDims[1] + siblingPad
+    }
+}
+
+function renderPersonAncestorsFamily(familyId, offset, childBind) {
+    var family = getFamily(familyId)
+    var ancDims = getParentsFamilyDimensions(family.id)
+    if (debug) renderGroup(offset, ancDims, "pink")
+    var grandHOffset = 0
+    var parHOffset = 0
+    var parBlockHeight = family.parents.length * personHeight
+    for (var j = 0; j < family.parents.length; j++) {
+        var parent = persons[family.parents[j]]
+        var parRectOffset = [
+            offset[0] + ancDims[0] - personWidth,
+            offset[1] + ancDims[1] / 2 - parBlockHeight / 2 + parHOffset]
+        renderPersonRect(parent.id, parRectOffset)
+        var grandDims = getParentsDimensions(parent.id)
+        renderPersonAncestors(
+            parent.id,
+            [offset[0] + ancDims[0] - grandDims[0] - personWidth, offset[1] + grandHOffset],
+            vAdd(parRectOffset, [0, personHeight / 2]))
+        grandHOffset += grandDims[1] + siblingPad
+        parHOffset += personHeight
+    }
+    if (childBind != null) {
+        renderLine(
+            childBind[0], childBind[1],
+            offset[0] + ancDims[0],
+            offset[1] + ancDims[1] / 2)
+    }
+}
+
+function renderPersonDescendants(id, offset, parentBind) {
     var person = persons[id]
     if (0 == person.parentOf.length) {
         if (parentBind != null)
@@ -189,7 +262,7 @@ function renderPerson(id, offset, parentBind) {
         return
     }
     if (debug) {
-        var personDims = getPersonDimensions(id)
+        var personDims = getPersonDescendantsDimensions(id)
         renderGroup(offset, personDims, "lime")
     }
     var hoffset = 0
@@ -198,7 +271,7 @@ function renderPerson(id, offset, parentBind) {
         var family = getFamily(person.parentOf[i])
         var partnerId = getPartner(id, family.id)
         var children = getFamily(family.id).children
-        var famDims = getFamilyDimensions(id, family.id)
+        var famDims = getFamilyDescendantsDimensions(id, family.id)
         var famOffset = vAdd(offset, [0, hoffset])
         if (debug) renderGroup(famOffset, famDims, "magenta")
         var parentOffset = getParentOffset(id, family.id)
@@ -235,8 +308,8 @@ function renderChildren(familyId, offset, parentBind) {
     if (debug) renderGroup(vAdd(offset, [-childPad, 0]), chDims)
     for (var i = 0; i < family.children.length; i++) {
         var childId = family.children[i]
-        var childDims = getPersonDimensions(childId)
-        renderPerson(childId, vAdd(offset, [0, hoffset]), parentBind)
+        var childDims = getPersonDescendantsDimensions(childId)
+        renderPersonDescendants(childId, vAdd(offset, [0, hoffset]), parentBind)
         hoffset += childDims[1] + siblingPad
     }
 }
