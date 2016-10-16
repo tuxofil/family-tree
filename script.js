@@ -1,7 +1,7 @@
 "use strict";
 
 // constants
-var personWidth = 40
+var personWidth = 200
 var personHeight = 20
 var childPad = 20
 var siblingPad = 5
@@ -72,7 +72,7 @@ function getBrothers(personId) {
     var brothers = []
     for (var i = 0; i < parents.length; i++) {
         var children = getChildren(parents[i])
-        for (var j = 0; j < children[j]; j++)
+        for (var j = 0; j < children.length; j++)
             if (children[j] != personId) brothers.push(children[j])
     }
     return brothers
@@ -254,7 +254,7 @@ function render(personId) {
          y: svgPad + (height - desDims.y) / 2})
     renderPersonAncestors(
         personId,
-        {x: svgPad, y: svgPad + (height - ancDims.y) / 2},
+        {x: svgPad, y: (height - svgPad * 2 - ancDims.y) / 2},
         {x: svgPad + ancDims.x, y: height / 2})
 }
 
@@ -404,6 +404,7 @@ function renderPersonRect(personId, offset, dims, isHighlighted) {
     var text = document.createElementNS(svgns, "text");
     text.setAttribute("x", offset.x + 3);
     text.setAttribute("y", offset.y + dims.y - 5);
+    text.setAttribute("style", "cursor:default")
     text.setAttribute("onclick", "onPersonClick('" + person.id + "')")
     text.addEventListener("contextmenu", function(event) {
         showContextMenu(person.id, event)
