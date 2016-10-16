@@ -99,23 +99,37 @@ function getParents(personId) {
 }
 
 function getCousins(personId) {
-    // TODO: implement
-    return []
+    var brothers = uniq(getBrothers(personId))
+    var parents = getParents(personId)
+    var grandParents = []
+    for (var i = 0; i < parents.length; i++)
+        grandParents = grandParents.concat(getParents(parents[i]))
+    grandParents = uniq(grandParents)
+    var cousins = []
+    for (var i = 0; i < grandParents.length; i++){
+        var children = getChildren(grandParents[i])
+        for (var j = 0; j < children.length; j++){
+            var cc = getChildren(children[j])
+            for (var k = 0; k < cc.length; k++)
+                if (cc[k] != personId && !isIn(cc[k], brothers))
+                    cousins.push(cc[k])
+        }
+    }
+    return uniq(cousins)
 }
 
 // Return copy of source list with all duplicate elements removed.
 function uniq(list) {
     var res = []
-    for (var i = 0; i < list.length; i++){
-        var alreadyIn = false
-        for (var j = 0; j < res.length; j++)
-            if (list[i] == res[j]) {
-                alreadyIn = true
-                break
-            }
-        if (!alreadyIn) res.push(list[i])
-    }
+    for (var i = 0; i < list.length; i++)
+        if (!isIn(list[i], res)) res.push(list[i])
     return res
+}
+
+function isIn(elem, list){
+    for(var i = 0; i < list.length; i++)
+        if (elem == list[i]) return true
+    return false
 }
 
 function canonicalizeMemberOf(obj) {
