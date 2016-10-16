@@ -1,7 +1,7 @@
 "use strict";
 
 // constants
-var personWidth = 30
+var personWidth = 40
 var personHeight = 20
 var childPad = 20
 var siblingPad = 5
@@ -20,21 +20,24 @@ var persons = {}
 */
 
 function Person(personId, name, gender, childOf, parentOf) {
-    var person = persons[personId]
-    if (person != null) return
-    if (name.length == 0) name = personId
-    person = {
-        "id": personId,
-        "name": name,
-        "gender": gender,
-        "childOf": canonicalizeMemberOf(childOf),
-        "parentOf": canonicalizeMemberOf(parentOf),
+    storePerson({
+        "id": personId, "name": name, "gender": gender,
+        "childOf": childOf, "parentOf": parentOf,
+    })
+}
+
+function storePerson(person) {
+    if (person.id == null || persons[person.id] != null) return
+    if (person.name.length == 0) {
+        person.name = "#" + person.id
     }
-    persons[personId] = person
+    person.childOf = canonicalizeMemberOf(person.childOf)
+    person.parentOf = canonicalizeMemberOf(person.parentOf)
+    persons[person.id] = person
     for (var i = 0; i < person.childOf.length; i++)
-        getFamily(person.childOf[i]).children.push(personId)
+        getFamily(person.childOf[i]).children.push(person.id)
     for (var i = 0; i < person.parentOf.length; i++)
-        getFamily(person.parentOf[i]).parents.push(personId)
+        getFamily(person.parentOf[i]).parents.push(person.id)
 }
 
 // ----------------------------------------------------------------------
