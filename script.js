@@ -248,10 +248,13 @@ function render(personId) {
     var height = Math.max(ancDims.y, desDims.y) + svgPad * 2
     svg.setAttribute("width", width)
     svg.setAttribute("height", height)
-    renderPersonDescendants(personId, {x: svgPad + ancDims.x, y: svgPad})
+    renderPersonDescendants(
+        personId,
+        {x: svgPad + ancDims.x,
+         y: svgPad + (height - desDims.y) / 2})
     renderPersonAncestors(
         personId,
-        {x: svgPad, y: svgPad + Math.abs((ancDims.y - desDims.y) / 2)},
+        {x: svgPad, y: svgPad + (height - ancDims.y) / 2},
         {x: svgPad + ancDims.x, y: height / 2})
 }
 
