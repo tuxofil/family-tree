@@ -87,6 +87,16 @@ function canonicalizeMemberOf(obj) {
 
 /*
  ----------------------------------------------------------------------
+  Navigation
+ ----------------------------------------------------------------------
+*/
+
+function onPersonClick(personId) {
+    render(personId)
+}
+
+/*
+ ----------------------------------------------------------------------
   Dimensions calculation
  ----------------------------------------------------------------------
 */
@@ -196,6 +206,7 @@ function render(personId) {
     var ancDims = getParentsDimensions(personId)
     var desDims = getPersonDescendantsDimensions(personId)
     var svg = document.getElementById("cnv")
+    svg.innerHTML = ''
     var width = ancDims[0] + desDims[0] + svgPad * 2
     var height = Math.max(ancDims[1], desDims[1]) + svgPad * 2
     svg.setAttribute("width", width)
@@ -253,12 +264,13 @@ function renderPersonAncestorsFamily(familyId, offset, childBind) {
 
 function renderPersonDescendants(id, offset, parentBind) {
     var person = persons[id]
+    var isMainPerson = parentBind == null
     if (0 == person.parentOf.length) {
         if (parentBind != null)
             renderLine(
                 parentBind[0], parentBind[1],
                 offset[0], offset[1] + personHeight / 2)
-        renderPersonRect(id, offset, [personWidth, personHeight])
+        renderPersonRect(id, offset, [personWidth, personHeight], isMainPerson)
         return
     }
     if (debug) {
@@ -285,7 +297,8 @@ function renderPersonDescendants(id, offset, parentBind) {
             renderLine(
                 parentBind[0], parentBind[1],
                 parentAbs[0], parentAbs[1] + personHeight / 2)
-        renderPersonRect(id, parentAbs)
+        renderPersonRect(id, parentAbs, null, isMainPerson)
+        isMainPerson = false
         lastPersonRectHOffset = parentAbs[1]
         if (partnerId != null) {
             renderPersonRect(
@@ -317,7 +330,7 @@ function renderChildren(familyId, offset, parentBind) {
 // ----------------------------------------------------------------------
 // rendering routines
 
-function renderPersonRect(id, offset, dims) {
+function renderPersonRect(id, offset, dims, isHighlighted) {
     var person = persons[id]
     var svg = document.getElementById("cnv")
     var rect = document.createElementNS(svgns, "rect");
@@ -328,7 +341,15 @@ function renderPersonRect(id, offset, dims) {
     rect.setAttribute("ry", 5);
     rect.setAttribute("width", dims[0]);
     rect.setAttribute("height", dims[1]);
-    rect.setAttribute("stroke", "green");
+    var strokeColor = "black"
+    var strokeWidth = 1
+    if (isHighlighted) {
+        strokeColor = "navy"
+        strokeWidth = 3
+    }
+    rect.setAttribute("stroke", strokeColor);
+    rect.setAttribute("stroke-width", strokeWidth);
+    rect.setAttribute("onclick", "onPersonClick('" + person.id + "')")
     if (person.gender == "m") {
         rect.setAttribute("fill", "#abcdef")
     }else{
@@ -337,6 +358,7 @@ function renderPersonRect(id, offset, dims) {
     var text = document.createElementNS(svgns, "text");
     text.setAttribute("x", offset[0] + 3);
     text.setAttribute("y", offset[1] + dims[1] - 5);
+    text.setAttribute("onclick", "onPersonClick('" + person.id + "')")
     text.innerHTML = person.name
     svg.appendChild(rect)
     svg.appendChild(text)
