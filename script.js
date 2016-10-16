@@ -1,3 +1,5 @@
+"use strict";
+
 // constants
 var personWidth = 30
 var personHeight = 20
@@ -60,6 +62,57 @@ function getPartner(personId, familyId) {
     for (var i = 0; i < family.parents.length; i++)
         if (family.parents[i] != personId) return family.parents[i]
     return null
+}
+
+function getBrothers(personId) {
+    var parents = getParents(personId)
+    var brothers = []
+    for (var i = 0; i < parents.length; i++) {
+        var children = getChildren(parents[i])
+        for (var j = 0; j < children[j]; j++)
+            if (children[j] != personId) brothers.push(children[j])
+    }
+    return brothers
+}
+
+function getPartners(personId) {
+    var person = persons[personId]
+    var partners = []
+    for (var i = 0; i < person.parentOf.length; i++) {
+        var family = getFamily(person.parentOf[i])
+        for (var j = 0; j < family.parents.length; j++)
+            if (family.parents[j] != personId)
+                partners.push(family.parents[j])
+    }
+    return partners
+}
+
+function getParents(personId) {
+    var person = persons[personId]
+    var parents = []
+    for (var i = 0; i < person.childOf.length; i++)
+        parents = parents.concat(getFamily(person.childOf[i]).parents)
+    return parents
+}
+
+function getCousins(personId) {
+    // TODO: implement
+    return []
+}
+
+// Return copy of source list with all duplicate elements removed.
+function uniq(list) {
+    var res = []
+    for (var i = 0; i < list.length; i++){
+        var alreadyIn = false
+        for (var j = 0; j < res.length; j++)
+            if (list[i] == res[j]) {
+                alreadyIn = true
+                break
+            }
+        if (!alreadyIn) res.push(list[i])
+    }
+    return res
 }
 
 function canonicalizeMemberOf(obj) {
@@ -183,6 +236,7 @@ function vAdd(v1, v2) {
 */
 
 function render(personId) {
+    hideContextMenu()
     var ancDims = getParentsDimensions(personId)
     var desDims = getPersonDescendantsDimensions(personId)
     var svg = document.getElementById("cnv")
@@ -333,6 +387,9 @@ function renderPersonRect(personId, offset, dims, isHighlighted) {
     rect.setAttribute("stroke", strokeColor);
     rect.setAttribute("stroke-width", strokeWidth);
     rect.setAttribute("onclick", "onPersonClick('" + person.id + "')")
+    rect.addEventListener("contextmenu", function(event) {
+        showContextMenu(person.id, event)
+    })
     if (person.gender == "m") {
         rect.setAttribute("fill", "#abcdef")
     }else{
@@ -342,6 +399,9 @@ function renderPersonRect(personId, offset, dims, isHighlighted) {
     text.setAttribute("x", offset.x + 3);
     text.setAttribute("y", offset.y + dims.y - 5);
     text.setAttribute("onclick", "onPersonClick('" + person.id + "')")
+    text.addEventListener("contextmenu", function(event) {
+        showContextMenu(person.id, event)
+    })
     text.innerHTML = person.name
     svg.appendChild(rect)
     svg.appendChild(text)

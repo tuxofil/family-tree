@@ -1,18 +1,36 @@
 <!DOCTYPE html>
 <html>
-<head>
-<meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
-<title>Family Tree</title>
-</head>
-<script src="script.js"></script>
-<script src="persons.js"></script>
-<body>
-  <table border=1><tr><td>
-    <svg id="cnv" width=400 height=400></svg>
-  </td></tr></table>
-</body>
-
-<script>
-  render(1)
-</script>
+  <head>
+    <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
+    <title>Family Tree</title>
+    <link rel='stylesheet' href='styles.css'>
+  </head>
+  <script src="script.js"></script>
+  <script src="contextmenu.js"></script>
+  <script src="persons.js"></script>
+  <body>
+    <table border=1>
+      <tr>
+        <td>
+          <svg id="cnv" width=400 height=400></svg>
+        </td>
+      </tr>
+    </table>
+    <div id="contextMenu" class="contextMenu">
+      <div id="cmiDetailed">Show detailed</div>
+      <div id="cmiBrothers">Brothers/sisters</div>
+      <div id="cmiPartners">Partners</div>
+      <div id="cmiParents">Parents</div>
+      <div id="cmiChildren">Children</div>
+      <div id="cmiCousins">Cousins</div>
+    </div>
+    <div id="cmsBrothers" class="contextSubMenu"></div>
+    <div id="cmsPartners" class="contextSubMenu"></div>
+    <div id="cmsParents" class="contextSubMenu"></div>
+    <div id="cmsChildren" class="contextSubMenu"></div>
+    <div id="cmsCousins" class="contextSubMenu"></div>
+  </body>
+  <script>
+    render(1)
+  </script>
 </html>
