@@ -412,8 +412,10 @@ function renderPersonRect(personId, offset, dims, isHighlighted) {
     })
     if (person.gender == "m") {
         rect.setAttribute("fill", "#abcdef")
+    }else if (person.gender == "f"){
+        rect.setAttribute("fill", "#feba98")
     }else{
-        rect.setAttribute("fill", "#fedcba")
+        rect.setAttribute("fill", "#cccccc")
     }
     var text = document.createElementNS(svgns, "text");
     text.setAttribute("x", offset.x + 3);
