@@ -4,7 +4,9 @@
    Thanks to Nick Salloum and his article at
      https://www.sitepoint.com/building-custom-right-click-context-menu-javascript/
 
-   Author: Aleksey Morarash <tuxofil@gmail.com>
+   Author: Aleksey Morarash <aleksey.morarash@gmail.com>
+   Copyright: 2016, Aleksey Morarash
+   License: BSD
  */
 
 "use strict";

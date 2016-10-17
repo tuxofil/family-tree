@@ -1,3 +1,11 @@
+/**
+   Family Tree visualizer.
+
+   Author: Aleksey Morarash <aleksey.morarash@gmail.com>
+   Copyright: 2016, Aleksey Morarash
+   License: BSD
+ */
+
 "use strict";
 
 // constants
