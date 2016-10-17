@@ -293,9 +293,16 @@ function renderPersonAncestorsFamily(familyId, offset, childBind) {
     if (debug) renderGroup(offset, ancDims, "pink")
     var grandHOffset = 0
     var parHOffset = 0
-    var parBlockHeight = family.parents.length * personHeight
-    for (var j = 0; j < family.parents.length; j++) {
-        var parent = persons[family.parents[j]]
+    var parents = family.parents.sort(function (a, b) {
+        if (persons[a].gender == "m") return -1
+        if (persons[b].gender == "m") return 1
+        if (persons[a].gender == "f") return -1
+        if (persons[b].gender == "f") return 1
+        return 0
+    })
+    var parBlockHeight = parents.length * personHeight
+    for (var j = 0; j < parents.length; j++) {
+        var parent = persons[parents[j]]
         var parRectOffset = {
             x: offset.x + ancDims.x - personWidth,
             y: offset.y + ancDims.y / 2 - parBlockHeight / 2 + parHOffset}
