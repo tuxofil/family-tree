@@ -9,7 +9,8 @@
 
 "use strict";
 
-var subMenus = ["cmsBrothers", "cmsPartners", "cmsParents", "cmsChildren", "cmsCousins"]
+var subMenus = ["cmsBrothers", "cmsPartners", "cmsParents", "cmsChildren",
+                "cmsCousins", "cmsUncles", "cmsNephews"]
 
 window.onkeyup = function(event) {
     if (event.keyCode === 27) hideContextMenu()
@@ -34,6 +35,8 @@ function showContextMenu(personId, event) {
     setupSubMenu("Parents", getParents(personId))
     setupSubMenu("Children", getChildren(personId))
     setupSubMenu("Cousins", getCousins(personId))
+    setupSubMenu("Uncles", getUncles(personId))
+    setupSubMenu("Nephews", getNephews(personId))
     menu.style.display = "block"
     var menuDims = {x: menu.offsetWidth, y: menu.offsetHeight}
     for (var i = 0; i < subMenus.length; i++){

@@ -99,23 +99,34 @@ function getParents(personId) {
 }
 
 function getCousins(personId) {
-    var brothers = uniq(getBrothers(personId))
+    var uncles = getUncles(personId)
+    var cousins = []
+    for (var i = 0; i < uncles.length; i++)
+        cousins = cousins.concat(getChildren(uncles[i]))
+    return uniq(cousins)
+}
+
+function getUncles(personId) {
     var parents = getParents(personId)
     var grandParents = []
     for (var i = 0; i < parents.length; i++)
         grandParents = grandParents.concat(getParents(parents[i]))
     grandParents = uniq(grandParents)
-    var cousins = []
+    var uncles = []
     for (var i = 0; i < grandParents.length; i++){
         var children = getChildren(grandParents[i])
-        for (var j = 0; j < children.length; j++){
-            var cc = getChildren(children[j])
-            for (var k = 0; k < cc.length; k++)
-                if (cc[k] != personId && !isIn(cc[k], brothers))
-                    cousins.push(cc[k])
-        }
+        for (var j = 0; j < children.length; j++)
+            if (!isIn(children[j], parents)) uncles.push(children[j])
     }
-    return uniq(cousins)
+    return uniq(uncles)
+}
+
+function getNephews(personId) {
+    var brothers = getBrothers(personId)
+    var nephews = []
+    for (var i = 0; i < brothers.length; i++)
+        nephews = nephews.concat(getChildren(brothers[i]))
+    return uniq(nephews)
 }
 
 // Return copy of source list with all duplicate elements removed.
