@@ -59,6 +59,11 @@ function setupSubMenu(name, personIds) {
     }
     var cmsItem = document.getElementById("cms" + name)
     cmsItem.innerHTML = ""
+    personIds = personIds.sort(function (a, b) {
+        if (persons[a].name < persons[b].name) return -1
+        if (persons[a].name > persons[b].name) return 1
+        return 0
+    })
     for (var i = 0; i < personIds.length; i++) {
         var person = persons[personIds[i]]
         cmsItem.innerHTML += "<div class='cmActive' onclick='onPersonClick(\"" +
