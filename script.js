@@ -9,6 +9,8 @@
 "use strict";
 
 // constants
+var currentLanguage = "en"
+
 var useIcons = false
 var textOnlyPersonWidth = 200
 var textOnlyPersonHeight = 20
@@ -283,6 +285,7 @@ function vAdd(v1, v2) {
 
 function render(personId) {
     hideContextMenu()
+    localizeContextMenu()
     if (useIcons) {
         personWidth = imagedPersonWidth
         personHeight = imagedPersonHeight

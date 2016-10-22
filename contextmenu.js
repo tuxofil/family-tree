@@ -48,6 +48,21 @@ function showContextMenu(personId, event) {
     }
 }
 
+function localizeContextMenu() {
+    var t = [
+        ["cmiDetailed", "cmShowDetails"],
+        ["cmiBrothers", "cmBrothers"],
+        ["cmiPartners", "cmPartners"],
+        ["cmiParents",  "cmParents"],
+        ["cmiChildren", "cmChildren"],
+        ["cmiCousins",  "cmCousins"],
+        ["cmiUncles",   "cmUncles"],
+        ["cmiNephews",  "cmNephews"],
+    ]
+    for (var i = 0; i < t.length; i++)
+        document.getElementById(t[i][0]).innerHTML = getText(currentLanguage, t[i][1])
+}
+
 function showSubMenu(name) {
     hideSubMenus()
     document.getElementById("cms" + name).style.display = "block"
