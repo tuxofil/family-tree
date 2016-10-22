@@ -9,14 +9,24 @@
 "use strict";
 
 // constants
-var personWidth = 200
-var personHeight = 20
+var useIcons = false
+var textOnlyPersonWidth = 200
+var textOnlyPersonHeight = 20
+var imagedPersonWidth = 200
+var imagedPersonHeight = 50
 var childPad = 20
 var siblingPad = 5
 var svgPad = 3
 var partnerShift = 10
 
+var iconWidth = 30
+var iconHeight = 40
+
 var debug = false
+
+// runtime vars
+var personWidth = textOnlyPersonWidth
+var personHeight = textOnlyPersonHeight
 
 var families = {}
 var persons = {}
@@ -273,6 +283,13 @@ function vAdd(v1, v2) {
 
 function render(personId) {
     hideContextMenu()
+    if (useIcons) {
+        personWidth = imagedPersonWidth
+        personHeight = imagedPersonHeight
+    }else{
+        personWidth = textOnlyPersonWidth
+        personHeight = textOnlyPersonHeight
+    }
     var ancDims = getParentsDimensions(personId)
     var desDims = getPersonDescendantsDimensions(personId)
     var svg = document.getElementById("cnv")
@@ -450,16 +467,42 @@ function renderPersonRect(personId, offset, dims, isHighlighted) {
         rect.setAttribute("fill", "#cccccc")
     }
     var text = document.createElementNS(svgns, "text");
-    text.setAttribute("x", offset.x + 3);
-    text.setAttribute("y", offset.y + dims.y - 5);
+    text.innerHTML = person.name
     text.setAttribute("style", "cursor:default")
     text.setAttribute("onclick", "onPersonClick('" + person.id + "')")
     text.addEventListener("contextmenu", function(event) {
         showContextMenu(person.id, event)
     })
-    text.innerHTML = person.name
     svg.appendChild(rect)
     svg.appendChild(text)
+    if (useIcons) {
+        text.setAttribute("x", offset.x + iconWidth + 6);
+    }else{
+        text.setAttribute("x", offset.x + 3);
+    }
+    text.setAttribute("y", offset.y + text.getBBox().height - 3);
+    if (useIcons) {
+        var img = document.createElementNS(svgns, "image");
+        img.setAttribute("x", offset.x + 5);
+        img.setAttribute("y", offset.y + 5);
+        img.setAttribute("width", iconWidth);
+        img.setAttribute("height", iconHeight);
+        img.setAttribute("style", "cursor:default")
+        if (person.icon != null && 0 < person.icon.length) {
+            img.setAttribute("href", person.icon)
+        }else if (person.gender == "m") {
+            img.setAttribute("href", "icons/male.png")
+        }else if (person.gender == "f") {
+            img.setAttribute("href", "icons/female.png")
+        }else{
+            img.setAttribute("href", "icons/unknown.png")
+        }
+        img.addEventListener("contextmenu", function(event) {
+            showContextMenu(person.id, event)
+        })
+        img.setAttribute("title", "icon")
+        svg.appendChild(img)
+    }
 }
 
 function renderLine(x1, y1, x2, y2) {
@@ -469,7 +512,7 @@ function renderLine(x1, y1, x2, y2) {
     line.setAttribute("y1", y1);
     line.setAttribute("x2", x2);
     line.setAttribute("y2", y2);
-    line.setAttribute("style", "stroke:silver;stroke-width:2")
+    line.setAttribute("style", "stroke:black;stroke-width:1")
     svg.appendChild(line)
 }
 
