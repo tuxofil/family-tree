@@ -48,10 +48,42 @@ function showContextMenu(personId, event) {
     setupSubMenu("Nephews", getNephews(personId))
     menu.style.display = "block"
     var menuDims = {x: menu.offsetWidth, y: menu.offsetHeight}
+    var itemHeight = menuDims.y / menu.childElementCount
     for (var i = 0; i < subMenus.length; i++){
         var coords = vAdd(cursorPos, {x: menuDims.x,
-                                      y: menuDims.y / menu.childElementCount * (i + 1)})
+                                      y: itemHeight * (i + 1)})
         setPos(document.getElementById(subMenus[i]), coords)
+    }
+    // setup settings menu
+    var langMenu = document.getElementById("cmiLanguage")
+    langMenu.innerHTML = getText(currentLanguage, "language")
+    langMenu.setAttribute("onmouseover", "showLanguagesSubMenu()")
+    var langs = document.getElementById("cmsLanguage")
+    langs.innerHTML = ""
+    for (var lang in langData) {
+        if (langData.hasOwnProperty(lang)){
+            var langName = langData[lang]["langName"]
+            langs.innerHTML += "<div class='cmActive' onclick='setLang(\"" + lang + "\")'>" +
+                langName + "</div>"
+        }
+    }
+    setPos(langs, vAdd(cursorPos, {x: menuDims.x, y: itemHeight * 9}))
+}
+
+function showLanguagesSubMenu() {
+    hideSubMenus()
+    document.getElementById("cmsLanguage").style.display = "block"
+}
+
+function setupSettingsMenu() {
+    var langMenu = document.getElementById("cmiLanguage")
+    langMenu.innerHTML = getText(currentLanguage, "language")
+    langMenu.setAttribute("onmouseover", "showLanguagesSubMenu()")
+    var langs = document.getElementById("cmsLanguage")
+    langs.innerHTML = ""
+    for (var lang in langData) {
+        if (langData.hasOwnProperty(lang))
+            langs.innerHTML += "<div class='cmActive'>" + langData[lang]["langName"] + "</div>"
     }
 }
 
@@ -116,6 +148,7 @@ function hideContextMenu() {
 function hideSubMenus() {
     for (var i = 0; i < subMenus.length; i++)
         document.getElementById(subMenus[i]).style.display = "none"
+    document.getElementById("cmsLanguage").style.display = "none"
 }
 
 function setPos(elem, coords) {

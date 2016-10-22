@@ -10,6 +10,7 @@
 
 // constants
 var currentLanguage = "en"
+var currentPerson = null
 
 var useIcons = false
 var textOnlyPersonWidth = 200
@@ -290,6 +291,7 @@ function vAdd(v1, v2) {
 function render(personId) {
     hideContextMenu()
     localizeContextMenu()
+    setupSettingsMenu()
     if (useIcons) {
         personWidth = imagedPersonWidth
         personHeight = imagedPersonHeight
@@ -314,6 +316,12 @@ function render(personId) {
         personId,
         {x: svgPad, y: (height - svgPad * 2 - ancDims.y) / 2},
         ancBindPoint)
+    currentPerson = personId
+}
+
+function setLang(lang) {
+    currentLanguage = lang
+    render(currentPerson)
 }
 
 function renderPersonAncestors(personId, offset, childBind) {

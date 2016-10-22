@@ -13,6 +13,7 @@ var defaultLanguage = "en"
 var langData = {
     en: {
         langName: "English",
+        language: "Language",
         cmShowDetails: "Show detailed",
         cmBrothers: "Siblings",
         cmPartners: "Spouses",
@@ -25,6 +26,7 @@ var langData = {
     },
     ua: {
         langName: "Українська",
+        language: "Мова",
         cmShowDetails: "Показати детально",
         cmBrothers: "Брати та сестри",
         cmPartners: "Чоловіки/дружини",
