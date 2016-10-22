@@ -281,14 +281,15 @@ function render(personId) {
     var height = Math.max(ancDims.y, desDims.y) + svgPad * 2
     svg.setAttribute("width", width)
     svg.setAttribute("height", height)
-    renderPersonDescendants(
-        personId,
-        {x: svgPad + ancDims.x,
-         y: svgPad + (height - desDims.y) / 2})
+    var ancBindPoint =
+        renderPersonDescendants(
+            personId,
+            {x: svgPad + ancDims.x,
+             y: svgPad + (height - desDims.y) / 2})
     renderPersonAncestors(
         personId,
         {x: svgPad, y: (height - svgPad * 2 - ancDims.y) / 2},
-        {x: svgPad + ancDims.x, y: height / 2})
+        ancBindPoint)
 }
 
 function renderPersonAncestors(personId, offset, childBind) {
@@ -349,12 +350,13 @@ function renderPersonDescendants(personId, offset, parentBind) {
                 parentBind.x, parentBind.y,
                 offset.x, offset.y + personHeight / 2)
         renderPersonRect(personId, offset, {x: personWidth, y: personHeight}, isMainPerson)
-        return
+        return {x: offset.x, y: offset.y + personHeight / 2}
     }
     if (debug) {
         var personDims = getPersonDescendantsDimensions(personId)
         renderGroup(offset, personDims, "lime")
     }
+    var ancBindPoint = null
     var hoffset = 0
     var lastPersonRectHOffset = 0
     for (var i = 0; i < person.parentOf.length; i++) {
@@ -376,6 +378,9 @@ function renderPersonDescendants(personId, offset, parentBind) {
                 parentBind.x, parentBind.y,
                 parentAbs.x, parentAbs.y + personHeight / 2)
         renderPersonRect(personId, parentAbs, null, isMainPerson)
+        if (ancBindPoint == null) {
+            ancBindPoint = {x: parentAbs.x, y: parentAbs.y + personHeight / 2}
+        }
         isMainPerson = false
         lastPersonRectHOffset = parentAbs.y
         if (partnerId != null) {
@@ -390,6 +395,7 @@ function renderPersonDescendants(personId, offset, parentBind) {
             vAdd(parentAbs, {x: personWidth, y: personHeight / 2}))
         hoffset += famDims.y + siblingPad
     }
+    return ancBindPoint
 }
 
 function renderChildren(familyId, offset, parentBind) {
