@@ -87,14 +87,16 @@ function setupSubMenu(name, personIds) {
     var cmsItem = document.getElementById("cms" + name)
     cmsItem.innerHTML = ""
     personIds = personIds.sort(function (a, b) {
-        if (persons[a].name < persons[b].name) return -1
-        if (persons[a].name > persons[b].name) return 1
+        if (getLongName(a) < getLongName(b)) return -1
+        if (getLongName(a) > getLongName(b)) return 1
         return 0
     })
     for (var i = 0; i < personIds.length; i++) {
-        var person = persons[personIds[i]]
+        var name = getLongName(personIds[i])
+        if (name == null || name.length == 0)
+            name = "&lt;" + getText(currentLanguage, "noname") + "&gt;"
         cmsItem.innerHTML += "<div class='cmActive' onclick='onPersonClick(\"" +
-            person.id + "\")'>" + person.name + "</div>"
+            personIds[i] + "\")'>" + name + "</div>"
     }
 }
 

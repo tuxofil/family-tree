@@ -69,6 +69,13 @@ function getFamily(familyId) {
     return families[familyId]
 }
 
+function getLongName(personId) {
+    var person = persons[personId]
+    var fullname = person["fullname"]
+    if (fullname != null && 0 < fullname.length) return fullname
+    return person["name"]
+}
+
 function getChildren(personId) {
     var person = persons[personId]
     var children = []

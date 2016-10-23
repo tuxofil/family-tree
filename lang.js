@@ -21,6 +21,7 @@ var langData = {
         cmCousins: "Cousins",
         cmUncles: "Uncles",
         cmNephews: "Nephews",
+        noname: "unknown name",
     },
     ua: {
         langName: "Українська",
@@ -32,6 +33,7 @@ var langData = {
         cmCousins: "Двоюрідні брати та сестри",
         cmUncles: "Дядьки та тітки",
         cmNephews: "Племінники",
+        noname: "ім’я невідоме",
     },
 }
 
