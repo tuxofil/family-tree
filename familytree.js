@@ -48,9 +48,6 @@ function Person(personId, name, gender, childOf, parentOf) {
 
 function storePerson(person) {
     if (person.id == null || persons[person.id] != null) return
-    if (person.name.length == 0) {
-        person.name = "#" + person.id
-    }
     person.childOf = canonicalizeMemberOf(person.childOf)
     person.parentOf = canonicalizeMemberOf(person.parentOf)
     persons[person.id] = person
