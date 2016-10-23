@@ -463,11 +463,11 @@ function renderPersonRect(personId, offset, dims, isHighlighted) {
         showContextMenu(person.id, event)
     })
     if (person.gender == "m") {
-        rect.setAttribute("fill", "#abcdef")
+        rect.setAttribute("fill", "#b8cee6")
     }else if (person.gender == "f"){
-        rect.setAttribute("fill", "#feba98")
+        rect.setAttribute("fill", "#feccf0")
     }else{
-        rect.setAttribute("fill", "#cccccc")
+        rect.setAttribute("fill", "#f3dbb6")
     }
     var text = document.createElementNS(svgns, "text");
     text.innerHTML = person.name
