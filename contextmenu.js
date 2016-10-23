@@ -31,7 +31,14 @@ function showContextMenu(personId, event) {
     setPos(menu, cursorPos)
     var person = persons[personId]
     var cmDetailed = document.getElementById("cmiDetailed")
-    setCMActive(cmDetailed, person.url != null)
+    if (person.url != null && 0 < person.url.length) {
+        setCMActive(cmDetailed, true)
+        cmDetailed.innerHTML = "<a href=\"" + person.url + "\" target=\"_blank\">" +
+            getText(currentLanguage, "cmShowDetails") + "</a>"
+    }else{
+        setCMActive(cmDetailed, false)
+        cmDetailed.innerHTML = getText(currentLanguage, "cmShowDetails")
+    }
     setupSubMenu("Brothers", getBrothers(personId))
     setupSubMenu("Partners", getPartners(personId))
     setupSubMenu("Parents", getParents(personId))
