@@ -201,6 +201,11 @@ function onPersonClick(personId) {
     render(personId)
 }
 
+function setLang(lang) {
+    currentLanguage = lang
+    render(currentPerson)
+}
+
 function applyShowIcons() {
     var cb = document.getElementById("cbShowIcons")
     useIcons = cb.checked
@@ -340,11 +345,6 @@ function render(personId) {
         {x: svgPad, y: (height - svgPad * 2 - ancDims.y) / 2},
         ancBindPoint)
     currentPerson = personId
-}
-
-function setLang(lang) {
-    currentLanguage = lang
-    render(currentPerson)
 }
 
 function renderPersonAncestors(personId, offset, childBind) {
