@@ -11,7 +11,10 @@
 // ----------------------------------------------------------------------
 // constants
 
+var defaultLanguage = "en"
+
 var defaultUseIcons = true
+
 var textOnlyPersonWidth = 200
 var textOnlyPersonHeight = 20
 var imagedPersonWidth = 200
@@ -31,7 +34,7 @@ var debug = false
 
 var useIcons = defaultUseIcons
 
-var currentLanguage = "en"
+var currentLanguage = defaultLanguage
 var currentPerson = null
 
 var personWidth = textOnlyPersonWidth
