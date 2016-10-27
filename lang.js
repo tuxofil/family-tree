@@ -23,6 +23,7 @@ var langData = {
         cmUncles: "Uncles",
         cmNephews: "Nephews",
         noname: "unknown name",
+        cmShowIcons: "Show pictures",
     },
     ua: {
         langName: "Українська",
@@ -36,6 +37,7 @@ var langData = {
         cmUncles: "Дядьки та тітки",
         cmNephews: "Племінники",
         noname: "ім’я невідоме",
+        cmShowIcons: "Показувати фото",
     },
 }
 

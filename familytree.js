@@ -11,7 +11,7 @@
 // ----------------------------------------------------------------------
 // constants
 
-var useIcons = false
+var defaultUseIcons = true
 var textOnlyPersonWidth = 200
 var textOnlyPersonHeight = 20
 var imagedPersonWidth = 200
@@ -28,6 +28,8 @@ var debug = false
 
 // ----------------------------------------------------------------------
 // runtime vars
+
+var useIcons = defaultUseIcons
 
 var currentLanguage = "en"
 var currentPerson = null
@@ -197,6 +199,12 @@ function canonicalizeMemberOf(obj) {
 
 function onPersonClick(personId) {
     render(personId)
+}
+
+function applyShowIcons() {
+    var cb = document.getElementById("cbShowIcons")
+    useIcons = cb.checked
+    render(currentPerson)
 }
 
 /*

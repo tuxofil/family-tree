@@ -85,6 +85,13 @@ function setupSettingsMenu() {
         if (langData.hasOwnProperty(lang))
             langs.innerHTML += "<div class='cmActive'>" + langData[lang]["langName"] + "</div>"
     }
+    var showIcons = document.getElementById("cmiShowIcons")
+    showIcons.setAttribute("onmouseover", "hideSubMenus()")
+    var showIconsCheckBox = document.getElementById("cbShowIcons")
+    showIconsCheckBox.setAttribute("onchange", "applyShowIcons()")
+    showIconsCheckBox.checked = useIcons
+    var showIconsLabel = document.getElementById("cmlShowIcons")
+    showIconsLabel.innerHTML = getText(currentLanguage, "cmShowIcons")
 }
 
 function localizeContextMenu() {
