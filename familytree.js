@@ -485,6 +485,7 @@ function renderPersonRect(personId, offset, dims, isHighlighted) {
     }else{
         rect.setAttribute("fill", "#f3dbb6")
     }
+    // insert text element with person name
     var text = document.createElementNS(svgns, "text");
     text.innerHTML = person.name
     text.setAttribute("style", "cursor:default")
@@ -499,7 +500,38 @@ function renderPersonRect(personId, offset, dims, isHighlighted) {
     }else{
         text.setAttribute("x", offset.x + 3);
     }
-    text.setAttribute("y", offset.y + text.getBBox().height - 3);
+    var textHeight = text.getBBox().height
+    text.setAttribute("y", offset.y + textHeight - 3);
+    // insert text element with person birth-death (only when icons are enabled)
+    if (useIcons) {
+        var birth = person.bdate
+        var death = person.ddate
+        if (birth || death) {
+            var text = document.createElementNS(svgns, "text");
+            if (birth != null && 0 < birth.length) {
+                while (birth.endsWith('-00'))
+                    birth = birth.slice(0, -3)
+            }else{
+                birth = '&hellip;'
+            }
+            if (death != null && 0 < death.length) {
+                while (death.endsWith('-00'))
+                    death = death.slice(0, -3)
+            }else{
+                death = ''
+            }
+            text.innerHTML = birth + '&mdash;' + death
+            text.setAttribute("style", "cursor:default")
+            text.setAttribute("onclick", "onPersonClick('" + person.id + "')")
+            text.addEventListener("contextmenu", function(event) {
+                showContextMenu(person.id, event)
+            })
+            text.setAttribute("x", offset.x + iconWidth + 6);
+            text.setAttribute("y", offset.y + textHeight * 2);
+            svg.appendChild(text)
+        }
+    }
+    // insert person photo or icon
     if (useIcons) {
         var img = document.createElementNS(svgns, "image");
         img.setAttribute("x", offset.x + 5);
