@@ -245,7 +245,7 @@ function getFamilyDescendantsDimensions(personId, familyId) {
     var partnerId = getPartner(personId, familyId)
     if (partnerId != null)
         famDims.y += personHeight
-    var childrenDims = getChilrenDimensions(familyId)
+    var childrenDims = getChildrenDimensions(familyId)
     if (0 < childrenDims.x && 0 < childrenDims.y){
         famDims.x += childrenDims.x
         famDims.y = Math.max(famDims.y, childrenDims.y)
@@ -256,7 +256,7 @@ function getFamilyDescendantsDimensions(personId, familyId) {
 function getParentOffset(personId, familyId) {
     var famDims = getFamilyDescendantsDimensions(personId, familyId)
     if (getPartner(personId, familyId) != null) {
-        var childrenDims = getChilrenDimensions(familyId)
+        var childrenDims = getChildrenDimensions(familyId)
         if (childrenDims.y < famDims.y) return {x:0, y:0}
         if (childrenDims.y / 2 < 1.5 * personHeight)
             return {x:0, y:(childrenDims.y - 2 * personHeight) / 2}
@@ -264,7 +264,7 @@ function getParentOffset(personId, familyId) {
     return {x:0, y:(famDims.y - personHeight) / 2}
 }
 
-function getChilrenDimensions(familyId) {
+function getChildrenDimensions(familyId) {
     var family = getFamily(familyId)
     var dims = {x: 0, y: 0}
     if (0 < family.children.length) {
@@ -436,7 +436,7 @@ function renderPersonDescendants(personId, offset, parentBind) {
 
 function renderChildren(familyId, offset, parentBind) {
     var family = getFamily(familyId)
-    var chDims = getChilrenDimensions(familyId)
+    var chDims = getChildrenDimensions(familyId)
     var hoffset = 0
     if (debug) renderGroup(vAdd(offset, {x: -childPad, y: 0}), chDims)
     for (var i = 0; i < family.children.length; i++) {
