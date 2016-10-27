@@ -8,9 +8,8 @@
 
 "use strict";
 
+// ----------------------------------------------------------------------
 // constants
-var currentLanguage = "en"
-var currentPerson = null
 
 var useIcons = false
 var textOnlyPersonWidth = 200
@@ -27,7 +26,12 @@ var iconHeight = 40
 
 var debug = false
 
+// ----------------------------------------------------------------------
 // runtime vars
+
+var currentLanguage = "en"
+var currentPerson = null
+
 var personWidth = textOnlyPersonWidth
 var personHeight = textOnlyPersonHeight
 
