@@ -194,6 +194,17 @@ function canonicalizeMemberOf(obj) {
     return [obj]
 }
 
+function getPersonIdFromHash() {
+    var hash = window.location.hash
+    if (hash && hash.startsWith('#')) {
+        log(hash)
+        hash = hash.slice(1)
+        log(hash)
+        var person = persons[hash]
+        if (person != null) return person.id
+    }
+}
+
 /*
  ----------------------------------------------------------------------
   Navigation
