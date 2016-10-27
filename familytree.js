@@ -89,6 +89,17 @@ function getChildren(personId) {
     return children
 }
 
+function sortByBirthDate(personIds) {
+    personIds = personIds.sort(function (a, b) {
+        a = persons[a].bdate
+        b = persons[b].bdate
+        if (a < b) return -1
+        if (a > b) return 1
+        return 0
+    })
+    return personIds
+}
+
 function getPartner(personId, familyId) {
     var family = families[familyId]
     for (var i = 0; i < family.parents.length; i++)
@@ -439,8 +450,9 @@ function renderChildren(familyId, offset, parentBind) {
     var chDims = getChildrenDimensions(familyId)
     var hoffset = 0
     if (debug) renderGroup(vAdd(offset, {x: -childPad, y: 0}), chDims)
-    for (var i = 0; i < family.children.length; i++) {
-        var childId = family.children[i]
+    var children = sortByBirthDate(family.children)
+    for (var i = 0; i < children.length; i++) {
+        var childId = children[i]
         var childDims = getPersonDescendantsDimensions(childId)
         renderPersonDescendants(childId, vAdd(offset, {x: 0, y: hoffset}), parentBind)
         hoffset += childDims.y + siblingPad
