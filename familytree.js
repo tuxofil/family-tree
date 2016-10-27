@@ -17,7 +17,7 @@ var defaultUseIcons = true
 
 var textOnlyPersonWidth = 200
 var textOnlyPersonHeight = 20
-var imagedPersonWidth = 200
+var imagedPersonWidth = 260
 var imagedPersonHeight = 50
 var childPad = 20
 var siblingPad = 5
