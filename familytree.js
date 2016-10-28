@@ -49,13 +49,6 @@ var persons = {}
  ----------------------------------------------------------------------
 */
 
-function Person(personId, name, gender, childOf, parentOf) {
-    storePerson({
-        "id": personId, "name": name, "gender": gender,
-        "childOf": childOf, "parentOf": parentOf,
-    })
-}
-
 function storePerson(person) {
     if (person.id == null || persons[person.id] != null) return
     person.childOf = canonicalizeMemberOf(person.childOf)

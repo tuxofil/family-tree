@@ -1,44 +1,252 @@
-Person(1, "", "m", [100,103], 1)
-Person(2, "", "m", 1, 2)
-Person(3, "", "f", [], 2)
-Person(4, "", "m", 2, [3,8,9,10,7])
-Person(5, "", "m", 2, 4)
-Person(6, "", "m", 3, 6)
-Person(7, "", "f", 3, 5)
-Person(8, "", "f", 7, [])
-Person(9, "", "f", 4, [])
-Person(10, "", "f", 7, [])
-Person(11, "", "m", 5, [])
-Person(12, "", "m", 5, [])
-Person(13, "", "m", 5, [])
-Person(14, "", "m", 5, [])
-Person(15, "", "m", 6, [])
-Person(16, "", "m", 6, [])
-Person(17, "", "m", 6, [])
-Person(18, "", "m", 6, [])
-Person(19, "", "f", [], 3)
-Person(20, "", "f", [], 7)
-Person(21, "", "f", [], 9)
-Person(22, "", "f", 8, [])
-Person(23, "", "f", 10, 11)
-Person(24, "", "f", [], 10)
-Person(25, "", "f", 11, [])
-Person(26, "", "f", 11, [])
+/*
+  Example family tree model.
 
-Person(100, "", "m", 101, 100)
-Person(101, "", "f", [102,105,104], 100)
-Person(102, "", "m", [], 101)
-Person(103, "", "f", [], 101)
-Person(104, "", "m", [], 102)
-Person(105, "", "f", [], 102)
+  Disclaimer: all persons below are fictional.
+  Any similarity with real people is a coincidence.
 
-Person(106, "", "m", [], 103)
-Person(107, "", "f", [], 103)
+  Popular spanish given names:
+    http://www.babycenter.com/0_100-most-popular-hispanic-baby-names-of-2010_10344424.bc
 
-Person(108, "", "m", [], 104)
-Person(109, "", "f", [], 104)
+  Most common spanish surnames:
+    http://www.lowchensaustralia.com/names/popular-spanish-names.htm
+*/
 
-Person(110, "", "f", 106, 105)
+"use strict";
 
-Person(111, "", "m", [], 106)
-Person(112, "", "f", [], 106)
+var personsSource = [
+    {"id": "p1", "name": "Santiago Perez", "gender": "m",
+     "fullname": "",
+     "icon": "example-pictures/01.png",
+     "url": "https://en.wikipedia.org/wiki/Santiago_(name)",
+     "bdate": "1937-01-02", "ddate": "1973-02-03",
+     "childOf": ["f100","f103"], "parentOf": ["f1"]},
+    {"id": "p2", "name": "Sebastian Perez", "gender": "m",
+     "fullname": "",
+     "icon": "",
+     "url": "https://en.wikipedia.org/wiki/Sebastian_(name)",
+     "bdate": "1956-10-02", "ddate": null,
+     "childOf": ["f1"], "parentOf": ["f2"]},
+    {"id": "p3", "name": "Sofia Jimenez", "gender": "f",
+     "fullname": "",
+     "icon": "example-pictures/02.png",
+     "url": "https://en.wikipedia.org/wiki/Sofia_(name)",
+     "bdate": "1958-04-05", "ddate": "1990",
+     "childOf": [], "parentOf": ["f2"]},
+    {"id": "p4", "name": "Matias Perez", "gender": "m",
+     "fullname": "",
+     "icon": "example-pictures/09.png",
+     "url": "https://en.wikipedia.org/wiki/Matias_(name)",
+     "bdate": "1975", "ddate": null,
+     "childOf": ["f2"], "parentOf": ["f3","f8","f9","f10","f7"]},
+    {"id": "p5", "name": "Nicolas Perez", "gender": "m",
+     "fullname": "",
+     "icon": "example-pictures/03.png",
+     "url": "https://en.wikipedia.org/wiki/Nicolas_(name)",
+     "bdate": "1977-12-01", "ddate": null,
+     "childOf": ["f2"], "parentOf": ["f4"]},
+    {"id": "p6", "name": "Samuel Perez", "gender": "m",
+     "fullname": "",
+     "icon": "",
+     "url": "https://en.wikipedia.org/wiki/Samuel_(name)",
+     "bdate": "1993-01-01", "ddate": null,
+     "childOf": ["f3"], "parentOf": ["f6"]},
+    {"id": "p7", "name": "Valentina Perez", "gender": "f",
+     "fullname": "",
+     "icon": "example-pictures/04.png",
+     "url": "https://en.wikipedia.org/wiki/Valentina_(name)",
+     "bdate": "1994-06-19", "ddate": null,
+     "childOf": ["f3"], "parentOf": ["f5"]},
+    {"id": "p8", "name": "Isabella Perez", "gender": "f",
+     "fullname": "",
+     "icon": "",
+     "url": "https://en.wikipedia.org/wiki/Isabella_(name)",
+     "bdate": null, "ddate": null,
+     "childOf": ["f7"], "parentOf": []},
+    {"id": "p9", "name": "Camila Perez", "gender": "f",
+     "fullname": "",
+     "icon": "example-pictures/05.png",
+     "url": "https://en.wikipedia.org/wiki/Camila_(name)",
+     "bdate": "1991-08-01", "ddate": "1997-11-02",
+     "childOf": ["f4"], "parentOf": []},
+    {"id": "p10", "name": "Valeria Perez", "gender": "f",
+     "fullname": "",
+     "icon": "",
+     "url": "https://en.wikipedia.org/wiki/Valeria_(name)",
+     "bdate": null, "ddate": null,
+     "childOf": ["f7"], "parentOf": []},
+    {"id": "p11", "name": "Alejandro Ruiz", "gender": "m",
+     "fullname": "",
+     "icon": "example-pictures/06.png",
+     "url": "https://en.wikipedia.org/wiki/Alejandro_(name)",
+     "bdate": null, "ddate": null,
+     "childOf": ["f5"], "parentOf": []},
+    {"id": "p12", "name": "Mateo Ruiz", "gender": "m",
+     "fullname": "",
+     "icon": "",
+     "url": "https://en.wikipedia.org/wiki/Mateo_(name)",
+     "bdate": null, "ddate": null,
+     "childOf": ["f5"], "parentOf": []},
+    {"id": "p13", "name": "Diego Ruiz", "gender": "m",
+     "fullname": "",
+     "icon": "example-pictures/07.png",
+     "url": "https://en.wikipedia.org/wiki/Diego_(name)",
+     "bdate": null, "ddate": null,
+     "childOf": ["f5"], "parentOf": []},
+    {"id": "p14", "name": "Benjamin Ruiz", "gender": "m",
+     "fullname": "",
+     "icon": "",
+     "url": "https://en.wikipedia.org/wiki/Benjamin_(name)",
+     "bdate": null, "ddate": null,
+     "childOf": ["f5"], "parentOf": []},
+    {"id": "p15", "name": "Daniel Perez", "gender": "m",
+     "fullname": "",
+     "icon": "example-pictures/08.png",
+     "url": "https://en.wikipedia.org/wiki/Daniel_(name)",
+     "bdate": "2011-09-04", "ddate": null,
+     "childOf": ["f6"], "parentOf": []},
+    {"id": "p16", "name": "Joaquin Perez", "gender": "m",
+     "fullname": "",
+     "icon": "",
+     "url": "https://en.wikipedia.org/wiki/Joaquin_(name)",
+     "bdate": "2011-09-04", "ddate": null,
+     "childOf": ["f6"], "parentOf": []},
+    {"id": "p17", "name": "Tomas Perez", "gender": "m",
+     "fullname": "",
+     "icon": "example-pictures/09.png",
+     "url": "https://en.wikipedia.org/wiki/Tomas_(name)",
+     "bdate": "2013-05-11", "ddate": null,
+     "childOf": ["f6"], "parentOf": []},
+    {"id": "p18", "name": "Gabriel Perez", "gender": "m",
+     "fullname": "",
+     "icon": "",
+     "url": "https://en.wikipedia.org/wiki/Gabriel_(name)",
+     "bdate": "2015-02-04", "ddate": null,
+     "childOf": ["f6"], "parentOf": []},
+    {"id": "p19", "name": "Mariana Gomez", "gender": "f",
+     "fullname": "",
+     "icon": "example-pictures/10.png",
+     "url": "https://en.wikipedia.org/wiki/Mariana_(name)",
+     "bdate": null, "ddate": null,
+     "childOf": [], "parentOf": ["f3"]},
+    {"id": "p20", "name": "Gabriela", "gender": "f",
+     "fullname": "",
+     "icon": "",
+     "url": "https://en.wikipedia.org/wiki/Gabriela_(name)",
+     "bdate": null, "ddate": null,
+     "childOf": [], "parentOf": ["f7"]},
+    {"id": "p21", "name": "Sara Diaz", "gender": "f",
+     "fullname": "",
+     "icon": "example-pictures/11.png",
+     "url": "https://en.wikipedia.org/wiki/Sara_(name)",
+     "bdate": null, "ddate": null,
+     "childOf": [], "parentOf": ["f9"]},
+    {"id": "p22", "name": "Daniella Perez", "gender": "f",
+     "fullname": "",
+     "icon": "",
+     "url": "https://en.wikipedia.org/wiki/Daniella_(name)",
+     "bdate": null, "ddate": null,
+     "childOf": ["f8"], "parentOf": []},
+    {"id": "p23", "name": "Maria Jose Perez", "gender": "f",
+     "fullname": "",
+     "icon": "example-pictures/12.png",
+     "url": "https://en.wikipedia.org/wiki/Maria_(name)",
+     "bdate": null, "ddate": null,
+     "childOf": ["f10"], "parentOf": ["f11"]},
+    {"id": "p24", "name": "Victoria Hernandez", "gender": "f",
+     "fullname": "",
+     "icon": "",
+     "url": "https://en.wikipedia.org/wiki/Victoria_(name)",
+     "bdate": null, "ddate": null,
+     "childOf": [], "parentOf": ["f10"]},
+    {"id": "p25", "name": "Martina Alvarez", "gender": "f",
+     "fullname": "",
+     "icon": "example-pictures/13.png",
+     "url": "https://en.wikipedia.org/wiki/Martina_(name)",
+     "bdate": null, "ddate": null,
+     "childOf": ["f11"], "parentOf": []},
+    {"id": "p26", "name": "Luciana Alvarez", "gender": "f",
+     "fullname": "",
+     "icon": "",
+     "url": "https://en.wikipedia.org/wiki/Luciana_(name)",
+     "bdate": null, "ddate": null,
+     "childOf": ["f11"], "parentOf": []},
+    {"id": "p100", "name": "Lucas Perez", "gender": "m",
+     "fullname": "",
+     "icon": "example-pictures/14.png",
+     "url": "https://en.wikipedia.org/wiki/Lucas_(name)",
+     "bdate": "1915-07-23", "ddate": "1939-09-01",
+     "childOf": ["f101"], "parentOf": ["f100"]},
+    {"id": "p101", "name": "Ximena Garcia", "gender": "f",
+     "fullname": "",
+     "icon": "",
+     "url": "https://en.wikipedia.org/wiki/Ximena_(name)",
+     "bdate": null, "ddate": "1954-00-00",
+     "childOf": ["f102","f105","f104"], "parentOf": ["f100"]},
+    {"id": "p102", "name": "Martin Perez", "gender": "m",
+     "fullname": "",
+     "icon": "example-pictures/14.png",
+     "url": "https://en.wikipedia.org/wiki/Martin_(name)",
+     "bdate": "1886-05-29", "ddate": "1934",
+     "childOf": [], "parentOf": ["f101"]},
+    {"id": "p103", "name": "Maria Fernanda Moreno", "gender": "f",
+     "fullname": "",
+     "icon": "",
+     "url": "https://en.wikipedia.org/wiki/Maria_(name)",
+     "bdate": "1889", "ddate": null,
+     "childOf": [], "parentOf": ["f101"]},
+    {"id": "p104", "name": "Emmanuel Garcia", "gender": "m",
+     "fullname": "",
+     "icon": "example-pictures/14.png",
+     "url": "https://en.wikipedia.org/wiki/Emmanuel_(name)",
+     "bdate": null, "ddate": null,
+     "childOf": [], "parentOf": ["f102"]},
+    {"id": "p105", "name": "Lucia Fernandez", "gender": "f",
+     "fullname": "",
+     "icon": "",
+     "url": "https://en.wikipedia.org/wiki/Lucia_(name)",
+     "bdate": null, "ddate": null,
+     "childOf": [], "parentOf": ["f102"]},
+    {"id": "p106", "name": "Alexander Sanchez", "gender": "m",
+     "fullname": "",
+     "icon": "example-pictures/14.png",
+     "url": "https://en.wikipedia.org/wiki/Alexander_(name)",
+     "bdate": null, "ddate": null,
+     "childOf": [], "parentOf": ["f103"]},
+    {"id": "p107", "name": "Natalia Martin", "gender": "f",
+     "fullname": "",
+     "icon": "",
+     "url": "https://en.wikipedia.org/wiki/Natalia_(name)",
+     "bdate": null, "ddate": null,
+     "childOf": [], "parentOf": ["f103"]},
+    {"id": "p108", "name": "David Gonzalez", "gender": "m",
+     "fullname": "",
+     "icon": "example-pictures/14.png",
+     "url": "https://en.wikipedia.org/wiki/David_(name)",
+     "bdate": null, "ddate": null,
+     "childOf": [], "parentOf": ["f104"]},
+    {"id": "p109", "name": "Catalina Rodriguez", "gender": "f",
+     "fullname": "",
+     "icon": "",
+     "url": "https://en.wikipedia.org/wiki/Catalina_(name)",
+     "bdate": null, "ddate": null,
+     "childOf": [], "parentOf": ["f104"]},
+    {"id": "p110", "name": "Mia Lopez", "gender": "f",
+     "fullname": "",
+     "icon": "example-pictures/14.png",
+     "url": "https://en.wikipedia.org/wiki/Mia_(name)",
+     "bdate": null, "ddate": null,
+     "childOf": ["f106"], "parentOf": ["f105"]},
+    {"id": "p111", "name": "Emilliano Lopez", "gender": "m",
+     "fullname": "",
+     "icon": "",
+     "url": "https://en.wikipedia.org/wiki/Emilliano_(name)",
+     "bdate": null, "ddate": null,
+     "childOf": [], "parentOf": ["f106"]},
+    {"id": "p112", "name": "Fernanda Martinez", "gender": "f",
+     "fullname": "",
+     "icon": "example-pictures/14.png",
+     "url": "https://en.wikipedia.org/wiki/Fernanda_(name)",
+     "bdate": null, "ddate": null,
+     "childOf": [], "parentOf": ["f106"]},
+]
+var startPersonId = "p1"

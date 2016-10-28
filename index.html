@@ -44,11 +44,13 @@
     <div id="cmsLanguage" class="contextSubMenu"></div>
   </body>
   <script>
+    for (var i = 0; i < personsSource.length; i++)
+       storePerson(personsSource[i])
     var personId = getPersonIdFromHash()
     if (personId){
        render(personId)
     }else{
-       render(1)
+       render(startPersonId)
     }
   </script>
 </html>
