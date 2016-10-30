@@ -352,6 +352,7 @@ function render(personId) {
         {x: svgPad, y: (height - svgPad * 2 - ancDims.y) / 2},
         ancBindPoint)
     currentPerson = personId
+    window.location.hash = "#" + personId
 }
 
 function renderPersonAncestors(personId, offset, childBind) {
